@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1086129060961",
+    "firebase_url": "https://bugtracker-1973a-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "bugtracker-1973a",
+    "storage_bucket": "bugtracker-1973a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086129060961:android:8ffb8174813eb2bcfafe20",
+        "android_client_info": {
+          "package_name": "com.example.bugtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086129060961-usmf3ndosj5rs3bk3m5h024bito02cso.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq0uSta_Wxr3wMW2aiU3-KQzD2HgLiJIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1086129060961-usmf3ndosj5rs3bk3m5h024bito02cso.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
