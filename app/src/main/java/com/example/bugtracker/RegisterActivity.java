@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
@@ -36,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private DatabaseReference mRootRef;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     ProgressDialog pd;
     @Override
@@ -73,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
                 else if(txtPassword.length() < 6)
                     Toast.makeText(RegisterActivity.this, "Password lengh is too short", Toast.LENGTH_SHORT).show();
                 else registerUser(txtUsername, txtName, txtEmail, txtPassword);
-                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                //startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
 
             }
         });
@@ -94,19 +96,42 @@ public class RegisterActivity extends AppCompatActivity {
                 map.put("username", username);
                 map.put("id", mAuth.getCurrentUser().getUid());
 
-                mRootRef.child("Users").child(mAuth.getCurrentUser().getUid()).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                //add to firestore
+                db.collection("users")
+                        .add(map)
+                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                if (task.isSuccessful()){
+                                    pd.dismiss();
+                                    Toast.makeText(RegisterActivity.this, "Successful registartion(firestore)!", Toast.LENGTH_SHORT).show();
+                                    //Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    //startActivity(intent);
+                                    //finish();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            pd.dismiss();
-                            Toast.makeText(RegisterActivity.this, "Successful registartion!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }
+                    public void onFailure(@NonNull Exception e) {
+                        pd.dismiss();
+                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
+//                mRootRef.child("Users").child(mAuth.getCurrentUser().getUid()).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()){
+//                            pd.dismiss();
+//                            Toast.makeText(RegisterActivity.this, "Successful registartion!", Toast.LENGTH_SHORT).show();
+//                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//                    }
+//                });
 
             }
         }).addOnFailureListener(new OnFailureListener() {

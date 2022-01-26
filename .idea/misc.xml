@@ -5,6 +5,9 @@
       <map>
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/drawable/button_background.xml" value="0.24256410256410257" />
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/drawable/edit_text_background.xml" value="0.24256410256410257" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_dashboard.xml" value="0.2140625" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_login.xml" value="0.264" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_main.xml" value="0.2296875" />
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_register.xml" value="0.1" />
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_start.xml" value="0.1" />
       </map>

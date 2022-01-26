@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BugTracker">
         <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".StartActivity"
             android:exported="false" />
         <activity
