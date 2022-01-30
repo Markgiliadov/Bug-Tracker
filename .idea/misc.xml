@@ -3,13 +3,22 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1245" />
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/drawable/button_background.xml" value="0.24256410256410257" />
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/drawable/edit_text_background.xml" value="0.24256410256410257" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/drawable/ic_add_background.xml" value="0.1245" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1245" />
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_dashboard.xml" value="0.2140625" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_feature.xml" value="0.264" />
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_login.xml" value="0.264" />
-        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_main.xml" value="0.2296875" />
-        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_register.xml" value="0.1" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_main.xml" value="0.176" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_register.xml" value="0.264" />
         <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/activity_start.xml" value="0.1" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/fragment_add.xml" value="0.1" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/fragment_home.xml" value="0.12708333333333333" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/list_item.xml" value="0.2203125" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/layout/step_item.xml" value="0.264" />
+        <entry key="..\:/Users/97252/AndroidStudioProjects/BugTracker/app/src/main/res/menu/bottom_menu.xml" value="0.17135416666666667" />
       </map>
     </option>
   </component>

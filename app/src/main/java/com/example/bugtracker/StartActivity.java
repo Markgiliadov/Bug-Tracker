@@ -44,7 +44,7 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(StartActivity.this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                //finish();
+                finish();
                 Toast.makeText(StartActivity.this, "1", Toast.LENGTH_SHORT).show();
             }
         });
