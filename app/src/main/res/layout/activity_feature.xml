@@ -8,6 +8,7 @@
     android:padding="12dp"
     android:orientation="vertical"
     android:id="@+id/root_layout"
+
     >
 
 
@@ -77,6 +78,29 @@
         android:text="Add new step"
         app:icon="@drawable/icons_plus"
         android:id="@+id/add_step"
-        android:layout_marginTop="90dp"
+
         />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="101dp"
+        android:layout_gravity="right|bottom"
+        android:layout_weight="1">
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="16dp"
+            android:layout_weight="0"
+            android:backgroundTint="@color/colorDarkBlue"
+            android:contentDescription="@string/app_name"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:text="Complete"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            tools:ignore="RtlCompat" />
+    </LinearLayout>
 </LinearLayout>
