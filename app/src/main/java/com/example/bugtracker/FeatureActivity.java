@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,7 +36,7 @@ public class FeatureActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference docRef = db.collection("features").document("pkyJFEhWHsr4bVrguFIC");
 
-    private int stepCounter = 1;
+    private int stepCounter = 0;
     String[] items = {"item1", "item2", "item3", "item4"};
 
     AutoCompleteTextView autoCompleteText;
@@ -57,9 +58,19 @@ public class FeatureActivity extends AppCompatActivity {
 //                TextInputEditText newStepDescription = new TextInputEditText(newStep.getContext());
                 if(stepCounter < 6) {
                     View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, true);
+
+                    //stepItem.setId(stepCounter);
+//                    Toast.makeText(FeatureActivity.this, "num of views: " + ((ViewGroup)linearLayout).getChildCount(), Toast.LENGTH_SHORT).show();
+                    int indexOfmyBtn = linearLayout.indexOfChild(addStep);
+                    linearLayout.addView(stepItem, indexOfmyBtn);
+                    indexOfmyBtn = linearLayout.indexOfChild(findViewById(R.id.add_step));
+//                    linearLayout.addView(this);
+//                    TextInputLayout textInputLayout = (TextInputLayout) ((ViewGroup)linearLayout).getChildAt(((ViewGroup)linearLayout).getChildCount());
+                    TextInputLayout textInputLayout = (TextInputLayout)((LinearLayout) (linearLayout.getChildAt(indexOfmyBtn-1 ))).getChildAt(0);
                     stepCounter++;
-                    linearLayout.addView(stepItem);
-                    TextInputLayout textInputLayout = findViewById(R.id.feature_step);
+                    Toast.makeText(FeatureActivity.this, "c "+indexOfmyBtn, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(FeatureActivity.this, "id: " + textInputLayout.getId(), Toast.LENGTH_LONG).show();
+
                     textInputLayout.setHint("Step " + stepCounter);
                 }else{
                     Toast.makeText(FeatureActivity.this, "You've reached maximum amount of steps available!", Toast.LENGTH_LONG).show();
