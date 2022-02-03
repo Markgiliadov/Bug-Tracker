@@ -1,106 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<ScrollView
+    android:layout_weight="0"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FeatureActivity"
-    android:padding="12dp"
-    android:orientation="vertical"
-    android:id="@+id/root_layout"
-
     >
-
-
-<!--    <TextView-->
-<!--        xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:padding="16dp"-->
-<!--        android:ellipsize="end"-->
-<!--        android:maxLines="1"-->
-<!--        android:textAppearance="?attr/textAppearanceSubtitle1"-->
-<!--        />-->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/menu"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Select Feature"
-        android:layout_margin="2dp">
-
-        <AutoCompleteTextView
-            android:id="@+id/dropdown_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none"
-            />
-
-
-    </com.google.android.material.textfield.TextInputLayout>
-<!--    <com.google.android.material.textfield.TextInputLayout-->
-<!--        android:id="@+id/feature_name"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:hint="Feature name"-->
-<!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">-->
-
-<!--        <com.google.android.material.textfield.TextInputEditText-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            app:icon="@drawable/icons_logout"-->
-<!--            />-->
-
-<!--    </com.google.android.material.textfield.TextInputLayout>-->
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/feature_description"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Describe what it does, A one liner"
-        android:layout_margin="2dp">
-
-
-    <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:textLocale="" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="left"
-        android:contentDescription="@string/app_name"
-        android:text="Add new step"
-        app:icon="@drawable/icons_plus"
-        android:id="@+id/add_step"
-
-        />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="101dp"
-        android:layout_gravity="right|bottom"
-        android:layout_weight="1">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".FeatureActivity"
+        android:padding="8dp"
+        android:orientation="vertical"
+        android:id="@+id/root_layout"
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/complete"
-            android:layout_width="wrap_content"
+        >
+
+
+    <!--    <TextView-->
+    <!--        xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:padding="16dp"-->
+    <!--        android:ellipsize="end"-->
+    <!--        android:maxLines="1"-->
+    <!--        android:textAppearance="?attr/textAppearanceSubtitle1"-->
+    <!--        />-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/menu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_margin="16dp"
-            android:layout_weight="0"
-            android:backgroundTint="@color/colorDarkBlue"
-            android:contentDescription="@string/app_name"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            android:text="Complete"
-            android:textAlignment="center"
-            android:textColor="@color/colorWhite"
-            tools:ignore="RtlCompat" />
+            android:hint="Select Feature"
+            android:layout_margin="2dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+    <!--    <com.google.android.material.textfield.TextInputLayout-->
+    <!--        android:id="@+id/feature_name"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:hint="Feature name"-->
+    <!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">-->
+
+    <!--        <com.google.android.material.textfield.TextInputEditText-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            app:icon="@drawable/icons_logout"-->
+    <!--            />-->
+
+    <!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/feature_description"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Describe what it does, A one liner"
+            android:layout_margin="2dp">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:textLocale=""
+                android:id="@+id/feature_description_text"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+
+            android:padding="2dp"
+            android:id="@+id/add_step_layout"
+            >
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:contentDescription="@string/app_name"
+                android:layout_margin="3dp"
+                android:text="Add new step"
+                app:icon="@drawable/icons_plus"
+                android:id="@+id/add_step"
+
+                />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_margin="3dp"
+                android:contentDescription="@string/app_name"
+                android:text="Add picture"
+                app:icon="@drawable/icons_plus"
+                android:id="@+id/add_picture"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:id="@+id/image_added"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:id="@+id/image_added1"/>
+        </LinearLayout>
+
+
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="right|bottom"-->
+<!--            android:layout_weight="1"-->
+<!--            >-->
+
+<!--            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
+<!--                android:id="@+id/complete"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_gravity="bottom"-->
+<!--                android:layout_margin="16dp"-->
+<!--                android:layout_weight="0"-->
+<!--                android:backgroundTint="@color/colorDarkBlue"-->
+<!--                android:contentDescription="@string/app_name"-->
+<!--                android:paddingStart="0dp"-->
+<!--                android:paddingEnd="0dp"-->
+<!--                android:text="Complete"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textColor="@color/colorWhite"-->
+<!--                tools:ignore="RtlCompat"-->
+<!--                />-->
+<!--        </LinearLayout>-->
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
+
+
+<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    android:id="@+id/complete"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|right"
+    android:layout_margin="16dp"
+    android:layout_weight="0"
+    android:backgroundTint="@color/colorDarkBlue"
+    android:contentDescription="@string/app_name"
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp"
+    android:text="Complete"
+    android:textAlignment="center"
+    android:textColor="@color/colorWhite"
+    tools:ignore="RtlCompat"
+    />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

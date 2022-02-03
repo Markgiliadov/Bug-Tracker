@@ -1,43 +1,69 @@
 package com.example.bugtracker;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FeatureActivity extends AppCompatActivity {
+    private String imageUrl;
     private ExtendedFloatingActionButton addStep;
+    private ExtendedFloatingActionButton addPicture;
+    private ExtendedFloatingActionButton complete;
+    private LinearLayout addStepLayout;
+    private Uri imageUri;
+    private ImageView imageAdded;
+    private String menuItemChosen;
+    private TextInputEditText featureDescription;
+    private ProgressDialog pd;
+    private Map<String, Object> stepsDescription;
     //firebase
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference docRef = db.collection("features").document("pkyJFEhWHsr4bVrguFIC");
-
+    private DocumentReference featuresMenuDoc = db.collection("featuresMenu").document("va4E2IaMGqDlqLDLIFV3");
     private int stepCounter = 0;
     String[] items = {"item1", "item2", "item3", "item4"};
+
 
     AutoCompleteTextView autoCompleteText;
     ArrayAdapter<String> adapterItems;
@@ -45,29 +71,58 @@ public class FeatureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feature);
+        stepsDescription = new HashMap<>();
+        imageAdded = findViewById(R.id.image_added);
+        addPicture = findViewById(R.id.add_picture);
+        addStepLayout = findViewById(R.id.add_step_layout);
+        complete = findViewById(R.id.complete);
         addStep = findViewById(R.id.add_step);
         autoCompleteText = findViewById(R.id.dropdown_menu);
+        featureDescription = findViewById(R.id.feature_description_text);
         LinearLayout linearLayout = findViewById(R.id.root_layout);
+        //Menu selection
+        fetchFeaturesMenuData();
+        addPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addPicture();
+            }
+        });
         addStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(stepCounter < 6) {
-                    View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, true);
-                    int indexOfmyBtn = linearLayout.indexOfChild(addStep);
+                if(stepCounter <= 3) {
+                    View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, false);
+                    int indexOfmyBtn = linearLayout.indexOfChild(addStepLayout);
                     linearLayout.addView(stepItem, indexOfmyBtn);
-                    indexOfmyBtn = linearLayout.indexOfChild(findViewById(R.id.add_step));
+                    indexOfmyBtn = linearLayout.indexOfChild(findViewById(R.id.add_step_layout));
+                    // Toast.makeText(FeatureActivity.this, "c "+indexOfmyBtn, Toast.LENGTH_SHORT).show();
                     TextInputLayout textInputLayout = (TextInputLayout)((LinearLayout) (linearLayout.getChildAt(indexOfmyBtn-1 ))).getChildAt(0);
+                    TextInputEditText textInputEditText = findViewById(R.id.step_item);
                     stepCounter++;
-                    Toast.makeText(FeatureActivity.this, "c "+indexOfmyBtn, Toast.LENGTH_SHORT).show();
+                    textInputEditText.setId(stepCounter);
                     textInputLayout.setHint("Step " + stepCounter);
-                    if(stepCounter == 6)
-                        addStep.hide();
+                    stepsDescription.put(String.valueOf(stepCounter), "");
                 }else{
-                    Toast.makeText(FeatureActivity.this, "You've reached maximum amount of steps available!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FeatureActivity.this, "You've reached maximum amount of steps available!"+stepsDescription.toString(), Toast.LENGTH_LONG).show();
                 }
             }
         });
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+        complete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                upload();
+            }
+        });
+    }
+
+    private void addPicture() {
+        CropImage.activity().start(FeatureActivity.this);
+    }
+
+    private void fetchFeaturesMenuData(){
+        featuresMenuDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
@@ -80,13 +135,97 @@ public class FeatureActivity extends AppCompatActivity {
                         autoCompleteText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                String item = parent.getItemAtPosition(position).toString();
-                                Toast.makeText(getApplicationContext(), "Item "+item, Toast.LENGTH_SHORT).show();
+                                menuItemChosen = parent.getItemAtPosition(position).toString();
+                                Toast.makeText(getApplicationContext(), "Item "+menuItemChosen, Toast.LENGTH_SHORT).show();
                             }
                         });
                     }else Toast.makeText(FeatureActivity.this, "FAILURE NO DOC: ", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+    private void upload() {
+        pd = new ProgressDialog(this);
+        pd.setMessage("Uploading");
+        pd.show();
+        if(imageUri != null){
+            StorageReference filePth = FirebaseStorage.getInstance().getReference("features").child(System.currentTimeMillis() + "." + getFileExtensions(imageUri));
+            StorageTask uploadTask = filePth.putFile(imageUri);
+            uploadTask.continueWithTask(new Continuation() {
+                @Override
+                public Object then(@NonNull Task task) throws Exception {
+                    if(!task.isSuccessful()){
+                        throw task.getException();
+                    }
+                    return filePth.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    Uri downloadUri = task.getResult();
+                    imageUrl = downloadUri.toString();
+                    addDataToFS();
+
+                }
+            });
+        } else {
+            imageUrl = "";
+            addDataToFS();
+        }
+    }
+    private void addDataToFS(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String featureId = db.collection("features").document().getId();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("featureId", featureId);
+        map.put("imageUrl", imageUrl);
+        map.put("featureCategory", menuItemChosen);
+        map.put("featureDescription", featureDescription.getText().toString());
+        map.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        for (int i = 1 ; i <= stepCounter ; i++)
+            stepsDescription.put(String.valueOf(i),((TextInputEditText)findViewById(i)).getText().toString());
+        map.put("stepsDescription", stepsDescription);
+        Toast.makeText(FeatureActivity.this, "DONE !"+stepsDescription.toString(), Toast.LENGTH_LONG).show();
+        db.collection("features").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.isSuccessful()){
+                    pd.dismiss();
+                    Toast.makeText(FeatureActivity.this, "Successful(firestore)!", Toast.LENGTH_LONG).show();
+//                                Intent intent = new Intent(FeatureActivity.this, MainActivity.class);
+//                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                startActivity(intent);
+//                                finish();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
+                Toast.makeText(FeatureActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String getFileExtensions(Uri uri) {
+        return MimeTypeMap.getSingleton().getExtensionFromMimeType(this.getContentResolver().getType(uri));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            imageUri = result.getUri();
+
+            imageAdded.setImageURI(imageUri);
+        }else{
+            Toast.makeText(this, "Try again!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(FeatureActivity.this, FeatureActivity.class));
+            finish();
+        }
+
     }
 }

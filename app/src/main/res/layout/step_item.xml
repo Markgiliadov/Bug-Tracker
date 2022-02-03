@@ -18,6 +18,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:text="M"
+            android:id="@+id/step_item"
              />
 
     </com.google.android.material.textfield.TextInputLayout>
