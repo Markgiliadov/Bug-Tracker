@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DashboardActivity">
+    tools:context=".DashboardActivity"
+    >
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/bar"
@@ -33,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:layout_marginRight="15dp"
+                android:layout_marginRight="5dp"
                 android:contentDescription="@string/app_name"
                 android:text="add new feature"
                 app:icon="@drawable/icons_plus" />
@@ -62,10 +63,9 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_features"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recycler_view_features"
-        android:layout_below="@+id/bar"/>
+        android:layout_below="@+id/bar" />
 </RelativeLayout>
