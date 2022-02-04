@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -38,8 +40,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,41 +84,71 @@ public class FeatureActivity extends AppCompatActivity {
         autoCompleteText = findViewById(R.id.dropdown_menu);
         featureDescription = findViewById(R.id.feature_description_text);
         LinearLayout linearLayout = findViewById(R.id.root_layout);
-        //Menu selection
-        fetchFeaturesMenuData();
-        addPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addPicture();
-            }
-        });
-        addStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(stepCounter <= 3) {
-                    View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, false);
-                    int indexOfmyBtn = linearLayout.indexOfChild(addStepLayout);
-                    linearLayout.addView(stepItem, indexOfmyBtn);
-                    indexOfmyBtn = linearLayout.indexOfChild(findViewById(R.id.add_step_layout));
-                    // Toast.makeText(FeatureActivity.this, "c "+indexOfmyBtn, Toast.LENGTH_SHORT).show();
-                    TextInputLayout textInputLayout = (TextInputLayout)((LinearLayout) (linearLayout.getChildAt(indexOfmyBtn-1 ))).getChildAt(0);
-                    TextInputEditText textInputEditText = findViewById(R.id.step_item);
-                    stepCounter++;
-                    textInputEditText.setId(stepCounter);
-                    textInputLayout.setHint("Step " + stepCounter);
-                    stepsDescription.put(String.valueOf(stepCounter), "");
-                }else{
-                    Toast.makeText(FeatureActivity.this, "You've reached maximum amount of steps available!"+stepsDescription.toString(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        Serializable extras = getIntent().getSerializableExtra("allData");
+        if (extras != null) {
 
-        complete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                upload();
+            complete.setVisibility(View.INVISIBLE);
+            addPicture.setVisibility(View.INVISIBLE);
+            addStep.setVisibility(View.INVISIBLE);
+
+            HashMap<String, Object> allData = (HashMap<String, Object>)extras;
+            featureDescription.setText(allData.get("featureDescription").toString());
+            autoCompleteText.setText(allData.get("featureCategory").toString());
+            if(allData.get("featureImage").toString().length() > 0)
+                Picasso.get().load(allData.get("featureImage").toString()).placeholder(R.mipmap.ic_launcher).into(imageAdded);
+
+
+            HashMap<String, Object> myStepsDescription = (HashMap<String, Object>) allData.get("featureSteps");
+            Log.e("", (String) myStepsDescription.get("1"));
+            for (int i = 1; i <= myStepsDescription.size() ; i++) {
+                int index = linearLayout.indexOfChild(addStepLayout);
+                View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, false);
+                linearLayout.addView(stepItem,index);
+                TextInputEditText textInputEditText = findViewById(R.id.step_item);
+                textInputEditText.setId(i);
+                TextInputLayout textInputLayout = (TextInputLayout) (textInputEditText.getParent().getParent());
+                textInputLayout.setHint("Step " + i);
+                textInputEditText.setText(myStepsDescription.get(String.valueOf(i)).toString());
             }
-        });
+        } else {
+
+            //Menu selection
+            fetchFeaturesMenuData();
+            addPicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addPicture();
+                }
+            });
+            addStep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //if (stepCounter <= 8) {
+                        View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, false);
+                        int indexOfmyBtn = linearLayout.indexOfChild(addStepLayout);
+                        linearLayout.addView(stepItem, indexOfmyBtn);
+                        indexOfmyBtn = linearLayout.indexOfChild(findViewById(R.id.add_step_layout));
+                        // Toast.makeText(FeatureActivity.this, "c "+indexOfmyBtn, Toast.LENGTH_SHORT).show();
+                        TextInputLayout textInputLayout = (TextInputLayout) ((LinearLayout) (linearLayout.getChildAt(indexOfmyBtn - 1))).getChildAt(0);
+                        TextInputEditText textInputEditText = findViewById(R.id.step_item);
+                        stepCounter++;
+                        textInputEditText.setId(stepCounter);
+                        textInputLayout.setHint("Step " + stepCounter);
+                        stepsDescription.put(String.valueOf(stepCounter), "");
+//                    } else {
+//                        Toast.makeText(FeatureActivity.this, "You've reached maximum amount of steps available!" + stepsDescription.toString(), Toast.LENGTH_LONG).show();
+//                    }
+                }
+            });
+
+            complete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    upload();
+                }
+            });
+
+        }
     }
 
     private void addPicture() {
@@ -179,6 +213,8 @@ public class FeatureActivity extends AppCompatActivity {
         HashMap<String, Object> map = new HashMap<>();
         map.put("featureId", featureId);
         map.put("imageUrl", imageUrl);
+        if(TextUtils.isEmpty(menuItemChosen))
+            menuItemChosen = "";
         map.put("featureCategory", menuItemChosen);
         map.put("featureDescription", featureDescription.getText().toString());
         map.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -193,10 +229,10 @@ public class FeatureActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     pd.dismiss();
                     Toast.makeText(FeatureActivity.this, "Successful(firestore)!", Toast.LENGTH_LONG).show();
-//                                Intent intent = new Intent(FeatureActivity.this, MainActivity.class);
-//                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                startActivity(intent);
-//                                finish();
+                                Intent intent = new Intent(FeatureActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

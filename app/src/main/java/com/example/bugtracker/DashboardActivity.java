@@ -52,6 +52,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        mFeatures.clear();
         readFeatures();
 
 

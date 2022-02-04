@@ -75,6 +75,18 @@ public class Feature {
         return stepsDescription;
     }
 
+    @Override
+    public String toString() {
+        return "Feature{" +
+                "featureCategory='" + featureCategory + '\'' +
+                ", featureDescription='" + featureDescription + '\'' +
+                ", featureId='" + featureId + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", publisher='" + publisher + '\'' +
+                ", stepsDescription=" + stepsDescription +
+                '}';
+    }
+
     public void setStepsDescription(HashMap<String, Object> stepsDescription) {
         this.stepsDescription = stepsDescription;
     }
