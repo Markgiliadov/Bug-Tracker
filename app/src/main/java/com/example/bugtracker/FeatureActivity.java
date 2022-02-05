@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FeatureActivity extends AppCompatActivity {
+
     private String imageUrl;
     private ExtendedFloatingActionButton addStep;
     private ExtendedFloatingActionButton addPicture;
@@ -64,6 +65,8 @@ public class FeatureActivity extends AppCompatActivity {
     private Map<String, Object> stepsDescription;
     //firebase
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String data_source;
+    private String single_data_source;
     private DocumentReference featuresMenuDoc = db.collection("featuresMenu").document("va4E2IaMGqDlqLDLIFV3");
     private int stepCounter = 0;
     String[] items = {"item1", "item2", "item3", "item4"};
@@ -84,14 +87,20 @@ public class FeatureActivity extends AppCompatActivity {
         autoCompleteText = findViewById(R.id.dropdown_menu);
         featureDescription = findViewById(R.id.feature_description_text);
         LinearLayout linearLayout = findViewById(R.id.root_layout);
+        HashMap<String, Object> allData = null;
         Serializable extras = getIntent().getSerializableExtra("allData");
-        if (extras != null) {
+        if(extras != null) {
+            allData = (HashMap<String, Object>) extras;
+            if(allData.get("isDashboardActivity") != null)
+                Log.e("S",  allData.get("isDashboardActivity").toString());
+        }
+        if (extras != null && allData.get("isDashboardActivity") == null ) {
 
             complete.setVisibility(View.INVISIBLE);
             addPicture.setVisibility(View.INVISIBLE);
             addStep.setVisibility(View.INVISIBLE);
 
-            HashMap<String, Object> allData = (HashMap<String, Object>)extras;
+
             featureDescription.setText(allData.get("featureDescription").toString());
             autoCompleteText.setText(allData.get("featureCategory").toString());
             if(allData.get("featureImage").toString().length() > 0)
@@ -99,19 +108,32 @@ public class FeatureActivity extends AppCompatActivity {
 
 
             HashMap<String, Object> myStepsDescription = (HashMap<String, Object>) allData.get("featureSteps");
-            Log.e("", (String) myStepsDescription.get("1"));
-            for (int i = 1; i <= myStepsDescription.size() ; i++) {
-                int index = linearLayout.indexOfChild(addStepLayout);
-                View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, false);
-                linearLayout.addView(stepItem,index);
-                TextInputEditText textInputEditText = findViewById(R.id.step_item);
-                textInputEditText.setId(i);
-                TextInputLayout textInputLayout = (TextInputLayout) (textInputEditText.getParent().getParent());
-                textInputLayout.setHint("Step " + i);
-                textInputEditText.setText(myStepsDescription.get(String.valueOf(i)).toString());
+            if(!myStepsDescription.isEmpty()) {
+                Log.e("", (String) myStepsDescription.get("1"));
+                for (int i = 1; i <= myStepsDescription.size(); i++) {
+                    int index = linearLayout.indexOfChild(addStepLayout);
+                    View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, false);
+                    linearLayout.addView(stepItem, index);
+                    TextInputEditText textInputEditText = findViewById(R.id.step_item);
+                    textInputEditText.setId(i);
+                    TextInputLayout textInputLayout = (TextInputLayout) (textInputEditText.getParent().getParent());
+                    textInputLayout.setHint("Step " + i);
+                    textInputEditText.setText(myStepsDescription.get(String.valueOf(i)).toString());
+                }
             }
         } else {
-
+            if(extras != null ){
+                if (allData.get("isDashboardActivity") != null) {
+                    if ((boolean) allData.get("isDashboardActivity")){
+                        data_source = "bugs";
+                        single_data_source = "bug";
+                    }
+                }
+            }
+            else {
+                data_source = "features";
+                single_data_source = "feature";
+            }
             //Menu selection
             fetchFeaturesMenuData();
             addPicture.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +205,7 @@ public class FeatureActivity extends AppCompatActivity {
         pd.setMessage("Uploading");
         pd.show();
         if(imageUri != null){
-            StorageReference filePth = FirebaseStorage.getInstance().getReference("features").child(System.currentTimeMillis() + "." + getFileExtensions(imageUri));
+            StorageReference filePth = FirebaseStorage.getInstance().getReference(data_source).child(System.currentTimeMillis() + "." + getFileExtensions(imageUri));
             StorageTask uploadTask = filePth.putFile(imageUri);
             uploadTask.continueWithTask(new Continuation() {
                 @Override
@@ -209,21 +231,21 @@ public class FeatureActivity extends AppCompatActivity {
     }
     private void addDataToFS(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String featureId = db.collection("features").document().getId();
+        String featureId = db.collection(data_source).document().getId();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("featureId", featureId);
+        map.put(single_data_source + "Id", featureId);
         map.put("imageUrl", imageUrl);
         if(TextUtils.isEmpty(menuItemChosen))
             menuItemChosen = "";
-        map.put("featureCategory", menuItemChosen);
-        map.put("featureDescription", featureDescription.getText().toString());
+        map.put(single_data_source + "Category", menuItemChosen);
+        map.put(single_data_source + "Description", featureDescription.getText().toString());
         map.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         for (int i = 1 ; i <= stepCounter ; i++)
             stepsDescription.put(String.valueOf(i),((TextInputEditText)findViewById(i)).getText().toString());
         map.put("stepsDescription", stepsDescription);
         Toast.makeText(FeatureActivity.this, "DONE !"+stepsDescription.toString(), Toast.LENGTH_LONG).show();
-        db.collection("features").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        db.collection(data_source).add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()){

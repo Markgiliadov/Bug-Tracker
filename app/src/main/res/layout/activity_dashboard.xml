@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DashboardActivity"
+    android:background="@color/colorAccent"
     >
 
     <com.google.android.material.appbar.AppBarLayout
@@ -23,20 +24,29 @@
                 android:id="@+id/logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginRight="15dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp"
                 android:contentDescription="@string/app_name"
-                android:text="Logout"
+                android:text=""
                 app:icon="@drawable/icons_logout" />
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/add_feature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="5dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
                 android:contentDescription="@string/app_name"
-                android:text="add new feature"
+                android:text="feature"
+                app:icon="@drawable/icons_plus" />
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/add_bug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
+                android:contentDescription="@string/app_name"
+                android:text="bug"
                 app:icon="@drawable/icons_plus" />
         </LinearLayout>
 

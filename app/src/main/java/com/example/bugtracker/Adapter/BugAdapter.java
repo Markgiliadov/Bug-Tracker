@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bugtracker.DashboardActivity;
 import com.example.bugtracker.FeatureActivity;
 import com.example.bugtracker.MainActivity;
-import com.example.bugtracker.Model.Feature;
+import com.example.bugtracker.Model.Bug;
 import com.example.bugtracker.R;
 import com.example.bugtracker.StartActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,15 +40,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHolder>{
+public class BugAdapter extends RecyclerView.Adapter<BugAdapter.ViewHolder>{
 
     private Context mContext;
-    private List<Feature> mFeatures;
+    private List<Bug> mBugs;
     private boolean isFragment;
 
-    public FeatureAdapter(Context mContext, List<Feature> mFeatures, boolean isFragment) {
+    public BugAdapter(Context mContext, List<Bug> mBugs, boolean isFragment) {
         this.mContext = mContext;
-        this.mFeatures = mFeatures;
+        this.mBugs = mBugs;
         this.isFragment = isFragment;
     }
 
@@ -57,52 +57,52 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.feature_item, parent, false);
-        return new FeatureAdapter.ViewHolder(view);
+        return new BugAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        Feature feature = mFeatures.get(position);
-        holder.featureCategory.setText(feature.getFeatureCategory());
-        holder.featureDescription.setText(feature.getFeatureDescription());
-        if(!feature.getStepsDescription().isEmpty())
-            holder.stepsDescriptionFirst.setText(feature.getStepsDescription().values().toArray()[0].toString());
-        if(TextUtils.isEmpty(feature.getImageUrl()) || feature.getImageUrl() == null) {
-            //Picasso.get().load(R.drawable.icons_no_img).placeholder(R.mipmap.ic_launcher).into(holder.featureImage);
+        Bug bug = mBugs.get(position);
+        holder.bugCategory.setText(bug.getBugCategory());
+        holder.bugDescription.setText(bug.getBugDescription());
+        if(!bug.getStepsDescription().isEmpty())
+            holder.stepsDescriptionFirst.setText(bug.getStepsDescription().values().toArray()[0].toString());
+        if(TextUtils.isEmpty(bug.getImageUrl()) || bug.getImageUrl() == null) {
+            //Picasso.get().load(R.drawable.icons_no_img).placeholder(R.mipmap.ic_launcher).into(holder.BugImage);
             Log.e("","SSS");
         }
         else
-            Picasso.get().load(feature.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(holder.featureImage);
+            Picasso.get().load(bug.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(holder.bugImage);
 
-        holder.deleteFeature.setOnClickListener(new View.OnClickListener() {
+        holder.deleteBug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("aa","aloha1"+holder.featureDescription.getText().toString());
-                deleteFeature(holder, feature, position);
+                Log.e("aa","aloha1"+holder.bugDescription.getText().toString());
+                deleteBug(holder, bug, position);
             }
         });
         holder.viewBugs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("aa","aloha1"+holder.featureDescription.getText().toString());
-                viewBugs(holder, feature, position);
+                Log.e("aa","aloha1"+holder.bugDescription.getText().toString());
+                viewBugs(holder, bug, position);
             }
         });
         holder.showDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("bb","aloha2");
-//                FeatureActivity featureActivity = new FeatureActivity();
-                //TextInputEditText featureDescription = featureActivity.findViewById(feature_description_text);
-                //featureDescription.setText(holder.featureDescription.getText().toString());
+//                BugActivity BugActivity = new BugActivity();
+                //TextInputEditText BugDescription = BugActivity.findViewById(Bug_description_text);
+                //BugDescription.setText(holder.BugDescription.getText().toString());
                 Intent i = new Intent(mContext, FeatureActivity.class);
                 HashMap<String, Object> allData = new HashMap<>();
-                allData.put("featureCategory", feature.getFeatureCategory());
-                allData.put("featureDescription", feature.getFeatureDescription());
-                allData.put("featureSteps", feature.getStepsDescription());
-                allData.put("featureImage", feature.getImageUrl());
+                allData.put("bugCategory", bug.getBugCategory());
+                allData.put("bugDescription", bug.getBugDescription());
+                allData.put("bugSteps", bug.getStepsDescription());
+                allData.put("bugImage", bug.getImageUrl());
                 i.putExtra("allData", allData);
                 mContext.startActivity(i);
 //                ((Activity)mContext).finish();
@@ -110,26 +110,27 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
         });
     }
 
-    private void viewBugs(ViewHolder holder, Feature feature, int position) {
+    private void viewBugs(ViewHolder holder, Bug bug, int position) {
         Intent i = new Intent(mContext, DashboardActivity.class);
         HashMap<String, Object> allData = new HashMap<>();
-        allData.put("isFeatureAdapter", true);
+        allData.put("isDashboardActivity", true);
         i.putExtra("allData", allData);
         mContext.startActivity(i);
     }
 
-    private void deleteFeature(@NonNull ViewHolder holder, Feature myFeature, int pos){
-        Task<QuerySnapshot> db = FirebaseFirestore.getInstance().collection("features").get();
+    private void deleteBug(@NonNull ViewHolder holder, Bug myBug, int pos){
+        Log.e("TAGSG ", "delete bug");
+        Task<QuerySnapshot> db = FirebaseFirestore.getInstance().collection("bugs").get();
         db.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
 
                     for(QueryDocumentSnapshot snapshot : task.getResult()){
-                        Feature feature = snapshot.toObject(Feature.class);
-                        Log.e("DATA:: ", feature.getFeatureId() + "  ddd  " + myFeature.getFeatureId());
-                        if(feature.getFeatureId().equals(myFeature.getFeatureId()))
-                            FirebaseFirestore.getInstance().collection("features").document(snapshot.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        Bug bug = snapshot.toObject(Bug.class);
+                        Log.e("DATA:: ", bug.getBugId() + "  ddd  " + myBug.getBugId());
+                        if(bug.getBugId().equals(myBug.getBugId()))
+                            FirebaseFirestore.getInstance().collection("bugs").document(snapshot.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("deleted ", "DocumentSnapshot successfully deleted!");
@@ -148,34 +149,34 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
         });
     }
     public void removeAt(int position) {
-        mFeatures.remove(position);
+        mBugs.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, mFeatures.size());
+        notifyItemRangeChanged(position, mBugs.size());
     }
     @Override
     public int getItemCount() {
-        return mFeatures.size();
+        return mBugs.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView featureCategory;
-        public TextView featureDescription;
-        public String featureId;
-        public ImageView featureImage;
+        public TextView bugCategory;
+        public TextView bugDescription;
+        public String bugId;
+        public ImageView bugImage;
         public String publisher;
         public TextView stepsDescriptionFirst;
         public MaterialButton showDetails;
-        public MaterialButton deleteFeature;
+        public MaterialButton deleteBug;
         public MaterialButton viewBugs;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            featureCategory = itemView.findViewById(R.id.feature_category);
-            featureDescription = itemView.findViewById(R.id.feature_description_text);
+            bugCategory = itemView.findViewById(R.id.feature_category);
+            bugDescription = itemView.findViewById(R.id.feature_description_text);
             stepsDescriptionFirst = itemView.findViewById(R.id.feature_step_one);
-            featureImage = itemView.findViewById(R.id.feature_image);
+            bugImage = itemView.findViewById(R.id.feature_image);
             showDetails = itemView.findViewById(R.id.show_details);
-            deleteFeature = itemView.findViewById(R.id.delete_feature);
+            deleteBug = itemView.findViewById(R.id.delete_feature);
             viewBugs = itemView.findViewById(R.id.view_bugs);
         }
     }
