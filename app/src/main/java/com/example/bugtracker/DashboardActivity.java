@@ -2,51 +2,36 @@ package com.example.bugtracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.drm.DrmManagerClient;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.example.bugtracker.Adapter.BugAdapter;
 import com.example.bugtracker.Adapter.FeatureAdapter;
-import com.example.bugtracker.Fragments.SearchFragment;
 import com.example.bugtracker.Model.Bug;
 import com.example.bugtracker.Model.Feature;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,7 +60,6 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        FirebaseFirestore.getInstance().collection("features").document("va2u35WMtFvHI7D0qycB").update("stepsDescription", FieldValue.arrayRemove(0));
         setContentView(R.layout.activity_dashboard);
         HashMap<String, Object> allData = null;
         Serializable extras = getIntent().getSerializableExtra("allData");
@@ -90,7 +74,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         if(extras != null) {
             allData = (HashMap<String, Object>) extras;
-            Log.e("S",  allData.get("isFeatureAdapter").toString());
         }
         if (extras != null && (boolean) allData.get("isFeatureAdapter")) {
             data_source = "bugs";
@@ -181,7 +164,6 @@ public class DashboardActivity extends AppCompatActivity {
                     if(TextUtils.isEmpty(searchBar.getText().toString())){
                         mBugs.clear();
                         for(QueryDocumentSnapshot snapshot : task.getResult()){
-                            Log.e("DATA:: ", snapshot.toString());
                             Bug bug = snapshot.toObject(Bug.class);
                             mBugs.add(bug);
                         }
@@ -230,8 +212,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void readFeatures() {
-        Log.e("", "inside read features");
-
         Task<QuerySnapshot> db = FirebaseFirestore.getInstance().collection("features").orderBy("featureDescription").get();
         db.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -240,7 +220,6 @@ public class DashboardActivity extends AppCompatActivity {
                     if(TextUtils.isEmpty(searchBar.getText().toString())){
                     mFeatures.clear();
                     for(QueryDocumentSnapshot snapshot : task.getResult()){
-                        Log.e("DATA:: ", snapshot.toString());
                         Feature feature = snapshot.toObject(Feature.class);
                         mFeatures.add(feature);
                     }

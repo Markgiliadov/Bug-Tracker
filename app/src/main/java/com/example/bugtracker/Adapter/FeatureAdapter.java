@@ -1,7 +1,6 @@
 package com.example.bugtracker.Adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -11,23 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bugtracker.DashboardActivity;
 import com.example.bugtracker.FeatureActivity;
-import com.example.bugtracker.MainActivity;
 import com.example.bugtracker.Model.Feature;
 import com.example.bugtracker.R;
-import com.example.bugtracker.StartActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,8 +30,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -74,14 +67,12 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
         holder.deleteFeature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("aa","aloha1"+holder.featureDescription.getText().toString());
                 deleteFeature(holder, feature, position);
             }
         });
         holder.viewBugs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("aa","aloha1"+holder.featureDescription.getText().toString());
                 viewBugs(holder, feature, position);
             }
         });
@@ -95,7 +86,6 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
                 allData.put("featureDescription", feature.getFeatureDescription());
                 allData.put("featureSteps", feature.getStepsDescription());
                 allData.put("featureImage", feature.getImageUrl());
-                Log.e("printbeforesend",feature.toString());
                 i.putExtra("allData", allData);
                 mContext.startActivity(i);
             }
@@ -129,10 +119,8 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
-
                     for(QueryDocumentSnapshot snapshot : task.getResult()){
                         Feature feature = snapshot.toObject(Feature.class);
-                        Log.e("DATA:: ", feature.getFeatureId() + "  ddd  " + myFeature.getFeatureId());
                         if(feature.getFeatureId().equals(myFeature.getFeatureId()))
                             FirebaseFirestore.getInstance().collection("features").document(snapshot.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override

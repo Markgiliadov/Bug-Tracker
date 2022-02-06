@@ -1,10 +1,7 @@
 package com.example.bugtracker.Model;
 
-import android.net.Uri;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Feature {
     private String featureCategory;
@@ -25,13 +22,8 @@ public class Feature {
         this.imageUrl = imageUrl;
         this.publisher = publisher;
         this.bugIds = bugIds;
-//        for (int i = 0;i<stepsDescription.length; i++) {
-//            this.stepsDescription[i] = stepsDescription[i];
-//        }
-//        for (int i = 0;i<stepsDescription.size(); i++) {
         this.bugIds.addAll(bugIds);
         this.stepsDescription.putAll(stepsDescription);
-//        }
 
     }
 

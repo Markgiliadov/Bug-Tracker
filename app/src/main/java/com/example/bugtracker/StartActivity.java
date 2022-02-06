@@ -36,7 +36,6 @@ public class StartActivity extends AppCompatActivity {
         animation.setDuration(1600);
         animation.setFillAfter(false);
         animation.setAnimationListener(new MyAnimationListener());
-
         iconImage.setAnimation(animation);
 
         // login on click

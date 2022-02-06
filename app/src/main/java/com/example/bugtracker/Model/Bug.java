@@ -1,9 +1,7 @@
 package com.example.bugtracker.Model;
 
-import android.net.Uri;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Bug {
     private String bugCategory;
@@ -22,13 +20,7 @@ public class Bug {
         this.bugId = bugId;
         this.imageUrl = imageUrl;
         this.publisher = publisher;
-//        for (int i = 0;i<stepsDescription.length; i++) {
-//            this.stepsDescription[i] = stepsDescription[i];
-//        }
-//        for (int i = 0;i<stepsDescription.size(); i++) {
         this.stepsDescription.putAll(stepsDescription);
-//        }
-
     }
 
     public String getBugCategory() {

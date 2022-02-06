@@ -75,8 +75,6 @@ public class RegisterActivity extends AppCompatActivity {
                 else if(txtPassword.length() < 6)
                     Toast.makeText(RegisterActivity.this, "Password lengh is too short", Toast.LENGTH_SHORT).show();
                 else registerUser(txtUsername, txtName, txtEmail, txtPassword);
-                //startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-
             }
         });
 
@@ -118,21 +116,6 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-//                mRootRef.child("Users").child(mAuth.getCurrentUser().getUid()).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()){
-//                            pd.dismiss();
-//                            Toast.makeText(RegisterActivity.this, "Successful registartion!", Toast.LENGTH_SHORT).show();
-//                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(intent);
-//                            finish();
-//                        }
-//                    }
-//                });
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

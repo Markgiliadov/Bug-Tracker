@@ -7,33 +7,24 @@ import androidx.core.content.ContextCompat;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
-
-import com.example.bugtracker.Model.Bug;
-import com.example.bugtracker.Model.Feature;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,11 +41,7 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class FeatureActivity extends AppCompatActivity {
@@ -77,7 +64,6 @@ public class FeatureActivity extends AppCompatActivity {
     private String single_data_source;
     private DocumentReference featuresMenuDoc = db.collection("featuresMenu").document("va4E2IaMGqDlqLDLIFV3");
     private int stepCounter = 0;
-    String[] items = {"item1", "item2", "item3", "item4"};
 
 
     AutoCompleteTextView autoCompleteText;
@@ -101,16 +87,13 @@ public class FeatureActivity extends AppCompatActivity {
             allData = (HashMap<String, Object>) extras;
         }
             if(extras != null ){
-                //asdasd
                 if(allData.get("isFeatureAdapter") == null ) {
-                    Log.e("A1","B1");
                     if (allData.get("isBugAdapter") != null) {
                         single_data_source = "bug";
                         data_source = "bugs";
                         showDetails(allData, linearLayout);
                     }
                 }else if(allData.get("isBugAdapter") == null){
-                    Log.e("A1","B1");
                     if (allData.get("isFeatureAdapter") != null) {
 
 
@@ -120,7 +103,6 @@ public class FeatureActivity extends AppCompatActivity {
                     }
 
                 }
-                //asdasd
                 if (allData.get("isAddBug") != null) {
                     if ((boolean) allData.get("isAddBug")){
                         data_source = "bugs";
@@ -129,12 +111,9 @@ public class FeatureActivity extends AppCompatActivity {
                         textInputLayout.setBoxBackgroundColor(ContextCompat.getColor(this, android.R.color.black));
                         textInputLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_FILLED);
 
-//Must use context of textInputLayout
                         TextInputEditText editText = new TextInputEditText(textInputLayout.getContext());
                         editText.setText("Add new Bug");
                         linearLayout.addView(editText, 0);
-                        //setting and searching for featureid to add bugs onto the feature
-                        //finalize();
                         try {
                             Class.forName("dalvik.system.CloseGuard")
                                     .getMethod("setEnabled", boolean.class)
@@ -143,30 +122,21 @@ public class FeatureActivity extends AppCompatActivity {
                             throw new RuntimeException(e);
                         }
                         String featureId = (String) allData.get("featureId");
-//                        FirebaseFirestore.getInstance().collection("features").document("T3VDUdXdY4ZKVC3fDjJB").set()
                         FirebaseFirestore.getInstance().collection("features").whereEqualTo("featureId",featureId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                Log.e("aloha1", "UO");
                                 if(task.isSuccessful()) {
-                                    Log.e("aloha2", "UO2"+task.getResult().getDocuments().get(0).getId());
-//                                    Log.e("aloha2", "UO2"+task.getResult().getDocuments().get(0).getd);
-//                                    QueryDocumentSnapshot document = task.getResult().iterator(0);
                                     if(!task.getResult().isEmpty())
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             addBugToFeatureDocumentId = document.getId();
-//                                            document
-                                            Log.e("noidea", addBugToFeatureDocumentId.toString());
                                             try {
                                                 finalize();
                                             } catch (Throwable throwable) {
                                                 throwable.printStackTrace();
                                             }
                                         }
-//                                    QueryDocumentSnapshot feature = task.getResult().;
-//                                    Log.e("", String.valueOf(feature));
                                 } else {
-                                Log.e("aaa", "Error getting documents: ", task.getException());
+                                Log.e("docs", "Error getting documents: ", task.getException());
                                 }
                             }
                         });
@@ -174,7 +144,6 @@ public class FeatureActivity extends AppCompatActivity {
                 }
             }
             else {
-
                 data_source = "features";
                 single_data_source = "feature";
             }
@@ -189,29 +158,22 @@ public class FeatureActivity extends AppCompatActivity {
             addStep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //if (stepCounter <= 8) {
                         View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, false);
                         int indexOfmyBtn = linearLayout.indexOfChild(addStepLayout);
                         linearLayout.addView(stepItem, indexOfmyBtn);
                         indexOfmyBtn = linearLayout.indexOfChild(findViewById(R.id.add_step_layout));
-                        // Toast.makeText(FeatureActivity.this, "c "+indexOfmyBtn, Toast.LENGTH_SHORT).show();
                         TextInputLayout textInputLayout = (TextInputLayout) ((LinearLayout) (linearLayout.getChildAt(indexOfmyBtn - 1))).getChildAt(0);
                         TextInputEditText textInputEditText = findViewById(R.id.step_item);
                         stepCounter++;
                         textInputEditText.setId(stepCounter);
                         textInputLayout.setHint("Step " + stepCounter);
                         stepsDescription.put(String.valueOf(stepCounter), "");
-//                    } else {
-//                        Toast.makeText(FeatureActivity.this, "You've reached maximum amount of steps available!" + stepsDescription.toString(), Toast.LENGTH_LONG).show();
-//                    }
                 }
             });
 
             complete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    addBugToFeature.get
-
                     upload();
                 }
             });
@@ -226,7 +188,6 @@ public class FeatureActivity extends AppCompatActivity {
         complete.setVisibility(View.INVISIBLE);
         addPicture.setVisibility(View.INVISIBLE);
         addStep.setVisibility(View.INVISIBLE);
-
         featureDescription.setText(allData.get(single_data_source + "Description").toString());
         autoCompleteText.setText(allData.get(single_data_source + "Category").toString());
         if(allData.get(single_data_source + "Image").toString().length() > 0)
@@ -235,7 +196,6 @@ public class FeatureActivity extends AppCompatActivity {
 
         HashMap<String, Object> myStepsDescription = (HashMap<String, Object>) allData.get(single_data_source + "Steps");
         if(!myStepsDescription.isEmpty()) {
-            Log.e("", (String) myStepsDescription.get("1"));
             for (int i = 1; i <= myStepsDescription.size(); i++) {
                 int index = linearLayout.indexOfChild(addStepLayout);
                 View stepItem = getLayoutInflater().inflate(R.layout.step_item, null, false);
@@ -292,7 +252,6 @@ public class FeatureActivity extends AppCompatActivity {
                     Uri downloadUri = task.getResult();
                     imageUrl = downloadUri.toString();
                     addDataToFS();
-
                 }
             });
         } else {
