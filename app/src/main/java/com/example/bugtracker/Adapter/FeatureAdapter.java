@@ -63,17 +63,12 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
         Feature feature = mFeatures.get(position);
         holder.featureCategory.setText(feature.getFeatureCategory());
         holder.featureDescription.setText(feature.getFeatureDescription());
         if(!feature.getStepsDescription().isEmpty())
             holder.stepsDescriptionFirst.setText(feature.getStepsDescription().values().toArray()[0].toString());
-        if(TextUtils.isEmpty(feature.getImageUrl()) || feature.getImageUrl() == null) {
-            //Picasso.get().load(R.drawable.icons_no_img).placeholder(R.mipmap.ic_launcher).into(holder.featureImage);
-            Log.e("","SSS");
-        }
-        else
+        if(!(TextUtils.isEmpty(feature.getImageUrl()) || feature.getImageUrl() == null))
             Picasso.get().load(feature.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(holder.featureImage);
 
         holder.deleteFeature.setOnClickListener(new View.OnClickListener() {
@@ -93,19 +88,28 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
         holder.showDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("bb","aloha2");
-//                FeatureActivity featureActivity = new FeatureActivity();
-                //TextInputEditText featureDescription = featureActivity.findViewById(feature_description_text);
-                //featureDescription.setText(holder.featureDescription.getText().toString());
                 Intent i = new Intent(mContext, FeatureActivity.class);
                 HashMap<String, Object> allData = new HashMap<>();
+                allData.put("isFeatureAdapter", true);
                 allData.put("featureCategory", feature.getFeatureCategory());
                 allData.put("featureDescription", feature.getFeatureDescription());
                 allData.put("featureSteps", feature.getStepsDescription());
                 allData.put("featureImage", feature.getImageUrl());
+                Log.e("printbeforesend",feature.toString());
                 i.putExtra("allData", allData);
                 mContext.startActivity(i);
-//                ((Activity)mContext).finish();
+            }
+        });
+
+        holder.addBug.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(mContext, FeatureActivity.class);
+                HashMap<String, Object> allData = new HashMap<>();
+                allData.put("isAddBug", true);
+                allData.put("featureId", feature.getFeatureId());
+                i.putExtra("allData", allData);
+                mContext.startActivity(i);
             }
         });
     }
@@ -114,6 +118,7 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
         Intent i = new Intent(mContext, DashboardActivity.class);
         HashMap<String, Object> allData = new HashMap<>();
         allData.put("isFeatureAdapter", true);
+        allData.put("featureId", feature.getFeatureId());
         i.putExtra("allData", allData);
         mContext.startActivity(i);
     }
@@ -147,6 +152,14 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
             }
         });
     }
+    @Override
+    public int getItemViewType(int position){
+        return position;
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
     public void removeAt(int position) {
         mFeatures.remove(position);
         notifyItemRemoved(position);
@@ -166,10 +179,12 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.ViewHold
         public TextView stepsDescriptionFirst;
         public MaterialButton showDetails;
         public MaterialButton deleteFeature;
+        public MaterialButton addBug;
         public MaterialButton viewBugs;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            addBug = itemView.findViewById(R.id.add_bug);
             featureCategory = itemView.findViewById(R.id.feature_category);
             featureDescription = itemView.findViewById(R.id.feature_description_text);
             stepsDescriptionFirst = itemView.findViewById(R.id.feature_step_one);

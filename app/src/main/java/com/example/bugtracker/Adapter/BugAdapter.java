@@ -20,6 +20,7 @@ import com.example.bugtracker.DashboardActivity;
 import com.example.bugtracker.FeatureActivity;
 import com.example.bugtracker.MainActivity;
 import com.example.bugtracker.Model.Bug;
+import com.example.bugtracker.Model.Feature;
 import com.example.bugtracker.R;
 import com.example.bugtracker.StartActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +31,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -63,76 +67,78 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
         Bug bug = mBugs.get(position);
         holder.bugCategory.setText(bug.getBugCategory());
         holder.bugDescription.setText(bug.getBugDescription());
         if(!bug.getStepsDescription().isEmpty())
             holder.stepsDescriptionFirst.setText(bug.getStepsDescription().values().toArray()[0].toString());
-        if(TextUtils.isEmpty(bug.getImageUrl()) || bug.getImageUrl() == null) {
-            //Picasso.get().load(R.drawable.icons_no_img).placeholder(R.mipmap.ic_launcher).into(holder.BugImage);
-            Log.e("","SSS");
-        }
-        else
+        if(!(TextUtils.isEmpty(bug.getImageUrl()) || bug.getImageUrl() == null))
             Picasso.get().load(bug.getImageUrl()).placeholder(R.mipmap.ic_launcher).into(holder.bugImage);
 
         holder.deleteBug.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("aa","aloha1"+holder.bugDescription.getText().toString());
                 deleteBug(holder, bug, position);
-            }
-        });
-        holder.viewBugs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("aa","aloha1"+holder.bugDescription.getText().toString());
-                viewBugs(holder, bug, position);
             }
         });
         holder.showDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("bb","aloha2");
-//                BugActivity BugActivity = new BugActivity();
-                //TextInputEditText BugDescription = BugActivity.findViewById(Bug_description_text);
-                //BugDescription.setText(holder.BugDescription.getText().toString());
                 Intent i = new Intent(mContext, FeatureActivity.class);
                 HashMap<String, Object> allData = new HashMap<>();
+                allData.put("isBugAdapter", true);
                 allData.put("bugCategory", bug.getBugCategory());
                 allData.put("bugDescription", bug.getBugDescription());
                 allData.put("bugSteps", bug.getStepsDescription());
                 allData.put("bugImage", bug.getImageUrl());
                 i.putExtra("allData", allData);
                 mContext.startActivity(i);
-//                ((Activity)mContext).finish();
             }
         });
     }
 
-    private void viewBugs(ViewHolder holder, Bug bug, int position) {
-        Intent i = new Intent(mContext, DashboardActivity.class);
-        HashMap<String, Object> allData = new HashMap<>();
-        allData.put("isDashboardActivity", true);
-        i.putExtra("allData", allData);
-        mContext.startActivity(i);
-    }
-
     private void deleteBug(@NonNull ViewHolder holder, Bug myBug, int pos){
-        Log.e("TAGSG ", "delete bug");
         Task<QuerySnapshot> db = FirebaseFirestore.getInstance().collection("bugs").get();
         db.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
-
+                    //
                     for(QueryDocumentSnapshot snapshot : task.getResult()){
                         Bug bug = snapshot.toObject(Bug.class);
-                        Log.e("DATA:: ", bug.getBugId() + "  ddd  " + myBug.getBugId());
                         if(bug.getBugId().equals(myBug.getBugId()))
                             FirebaseFirestore.getInstance().collection("bugs").document(snapshot.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    // read Features - delete bug id
+//                                    FirebaseFirestore.getInstance().collection("features").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                            if(task.isSuccessful()) {
+//                                                Log.e("S", "SS");
+//                                                for(QueryDocumentSnapshot snapshot : task.getResult()) {
+//                                                    Feature feature = snapshot.toObject(Feature.class);
+//                                                    if (feature.getBugIds() != null){
+//                                                        String id = snapshot.getReference().getId();
+//                                                        DocumentReference documentReference = FirebaseFirestore.getInstance().collection("features").document(id);
+//
+//                                                        Log.e("S", "id: " + id + " hgolderid: " + holder.itemView.getId());
+//                                                    for (int i = 0; i < feature.getBugIds().size(); i++) {
+//                                                        if (feature.getBugIds().get(i).equals(myBug.getBugId())) {
+////                                                            Log.e("PRINTIT", " " + String.valueOf(snapshot.getReference().getId()+snapshot.getReference().getPath()));
+////                                                            documentReference.update("bugIds", FieldValue.arrayRemove(40));
+//
+////                                                                        FirebaseFirestore.getInstance().collection("features").document(snapshot.getReference().getId().toString()).set(new String[]{"S", "S"});
+////                                                                                .update(
+////                                                                                "bugIds",FieldValue.arrayRemove(30));
+//                                                        }
+//                                                    }
+//                                                }
+//                                                }
+//                                            }
+//                                        }
+//                                    });
+
                                     Log.d("deleted ", "DocumentSnapshot successfully deleted!");
                                     removeAt(pos);
                                 }
@@ -147,6 +153,14 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.ViewHolder>{
                 }
             }
         });
+    }
+    @Override
+    public int getItemViewType(int position){
+        return position;
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
     public void removeAt(int position) {
         mBugs.remove(position);
@@ -168,6 +182,7 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.ViewHolder>{
         public MaterialButton showDetails;
         public MaterialButton deleteBug;
         public MaterialButton viewBugs;
+        public MaterialButton addBug;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -178,6 +193,9 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.ViewHolder>{
             showDetails = itemView.findViewById(R.id.show_details);
             deleteBug = itemView.findViewById(R.id.delete_feature);
             viewBugs = itemView.findViewById(R.id.view_bugs);
+            addBug = itemView.findViewById(R.id.add_bug);
+            addBug.setVisibility(View.GONE);
+            viewBugs.setVisibility(View.GONE);
         }
     }
 }

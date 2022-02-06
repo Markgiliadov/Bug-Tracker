@@ -18,36 +18,43 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="10dp"
+            >
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="5dp"
                 android:contentDescription="@string/app_name"
                 android:text=""
                 app:icon="@drawable/icons_logout" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp">
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/add_feature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="@string/app_name"
+                    android:text="feature"
+                    app:icon="@drawable/icons_plus" />
 
-            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-                android:id="@+id/add_feature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="15dp"
-                android:contentDescription="@string/app_name"
-                android:text="feature"
-                app:icon="@drawable/icons_plus" />
-            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-                android:id="@+id/add_bug"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="15dp"
-                android:contentDescription="@string/app_name"
-                android:text="bug"
-                app:icon="@drawable/icons_plus" />
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/toggle_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="4dp"
+                    android:contentDescription="@string/app_name"
+                    android:text="all bugs"
+                    app:icon="@drawable/icons_upward_arrow" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <androidx.appcompat.widget.Toolbar
@@ -73,9 +80,17 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_features"
+    <RelativeLayout
+        android:id="@+id/recycler_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bar" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/bar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_features"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             />
+    </RelativeLayout>
+
 </RelativeLayout>

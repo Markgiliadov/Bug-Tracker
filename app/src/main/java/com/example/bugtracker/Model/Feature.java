@@ -2,6 +2,7 @@ package com.example.bugtracker.Model;
 
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,22 +12,25 @@ public class Feature {
     private String featureId;
     private String imageUrl;
     private String publisher;
+    private ArrayList<String > bugIds;
     private HashMap<String, Object> stepsDescription;
 
     public Feature() {
     }
 
-    public Feature(String featureCategory, String featureDescription, String featureId, String imageUrl, String publisher, HashMap<String, Object> stepsDescription) {
+    public Feature(String featureCategory, String featureDescription, String featureId, String imageUrl, String publisher, HashMap<String, Object> stepsDescription, ArrayList<String > bugIds) {
         this.featureCategory = featureCategory;
         this.featureDescription = featureDescription;
         this.featureId = featureId;
         this.imageUrl = imageUrl;
         this.publisher = publisher;
+        this.bugIds = bugIds;
 //        for (int i = 0;i<stepsDescription.length; i++) {
 //            this.stepsDescription[i] = stepsDescription[i];
 //        }
 //        for (int i = 0;i<stepsDescription.size(); i++) {
-            this.stepsDescription.putAll(stepsDescription);
+        this.bugIds.addAll(bugIds);
+        this.stepsDescription.putAll(stepsDescription);
 //        }
 
     }
@@ -53,6 +57,13 @@ public class Feature {
 
     public void setFeatureId(String featureId) {
         this.featureId = featureId;
+    }
+    public ArrayList<String > getBugIds() {
+        return bugIds;
+    }
+
+    public void setBugIds(ArrayList<String > bugIds) {
+        this.bugIds = bugIds;
     }
 
     public String getImageUrl() {
